@@ -1,0 +1,17 @@
+{
+  "name": "external-memory",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "apply-ddl": "node scripts/apply-ddl.mjs",
+    "test:embed": "node scripts/test-embed.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "deploy": "supabase functions deploy mcp --no-verify-jwt",
+    "secrets": "supabase secrets set --env-file .env.functions"
+  },
+  "devDependencies": {
+    "pg": "^8.13.0",
+    "supabase": "^2.0.0"
+  }
+}

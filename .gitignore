@@ -1,0 +1,11 @@
+.env
+.env.functions
+node_modules/
+.DS_Store
+pwa/.env.local
+supabase/.branches/
+supabase/.temp/
+reports/
+dist/
+pwa/dist/
+*.tgz

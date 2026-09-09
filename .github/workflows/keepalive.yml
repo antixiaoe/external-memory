@@ -1,0 +1,36 @@
+# Supabase 免费档 7 天不活跃会暂停,此 workflow 每 3 天打一次真实 DB 查询保活
+# 注意:GitHub 对 60 天无 commit 的仓库会停用定时任务,所以最后一步顺手推一个空 commit 保持仓库活跃
+name: keepalive
+
+on:
+  schedule:
+    - cron: '23 3 */3 * *' # 每 3 天 UTC 03:23
+  workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write # 推 keepalive 空 commit 用
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase(真实查询一行,产生数据库活动)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          code=$(curl -s -o /tmp/resp.json -w '%{http_code}' \
+            "$SUPABASE_URL/rest/v1/memory?select=id&limit=1" \
+            -H "apikey: $SUPABASE_SECRET_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+            -H "User-Agent: github-keepalive")
+          echo "HTTP $code"; head -c 200 /tmp/resp.json; echo
+          [ "$code" = "200" ] || exit 1
+
+      - name: Keepalive commit(防止 GitHub 60 天无活动停用定时任务)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B keepalive
+          git commit --allow-empty -m "keepalive $(date -u +%F)"
+          git push -f origin keepalive

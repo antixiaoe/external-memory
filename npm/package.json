@@ -1,0 +1,20 @@
+{
+  "name": "external-memory-mcp",
+  "version": "0.1.1",
+  "description": "外部记忆库 MCP server(stdio,单文件零依赖):wake 唤醒 / recall 混合召回 / record 记录 / consolidate 整理,数据存用户自己的 Supabase",
+  "type": "module",
+  "bin": {
+    "external-memory-mcp": "./external-memory-mcp.mjs"
+  },
+  "files": [
+    "external-memory-mcp.mjs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "http://npm.guazi-corp.com"
+  }
+}

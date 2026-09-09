@@ -1,0 +1,6 @@
+# supabase CLI 配置。project_id 由 `npx supabase link --project-ref <ref>` 自动写入。
+project_id = "YOUR_PROJECT_REF"
+
+[functions.mcp]
+# 我们用自有 Bearer token 鉴权（auth.ts），关闭 supabase JWT 校验
+verify_jwt = false

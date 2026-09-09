@@ -1,0 +1,17 @@
+{
+  "name": "external-memory",
+  "version": "0.1.1",
+  "description": "给 Agent 装长期记忆的自托管技能:wake 唤醒 / recall 向量+关键词混合召回 / record 语义去重记录 / consolidate 整理聚合。三层记忆模型(source/memory/story)+ 常驻画像 profile。记忆存用户自己的 Supabase(pgvector+pg_trgm),embedding 走用户自己的硅基流动免费额度。附本地 PWA 管理面板。完整搭建教程见 docs/自托管教程.md。",
+  "entrypoint": "SKILL.md",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "VERSION",
+    "manifest.json",
+    "stdio",
+    "supabase",
+    "pwa",
+    "scripts",
+    "docs"
+  ]
+}
