@@ -14,6 +14,8 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Ping Supabase(真实查询一行,产生数据库活动)
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
