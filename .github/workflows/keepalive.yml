@@ -1,10 +1,11 @@
-# Supabase 免费档 7 天不活跃会暂停,此 workflow 每 3 天打一次真实 DB 查询保活
+# Supabase 免费档 7 天不活跃会暂停,此 workflow 每天打一读一写保活
+# 教训(2026-09-16):每 3 天的只读 ping 返回 200 仍被 pause,写心跳更不容易被活动统计漏掉
 # 注意:GitHub 对 60 天无 commit 的仓库会停用定时任务,所以最后一步顺手推一个空 commit 保持仓库活跃
 name: keepalive
 
 on:
   schedule:
-    - cron: '23 3 */3 * *' # 每 3 天 UTC 03:23
+    - cron: '37 2 * * *' # 每天 UTC 02:37
   workflow_dispatch: # 允许手动触发
 
 permissions:
@@ -28,6 +29,22 @@ jobs:
             -H "User-Agent: github-keepalive")
           echo "HTTP $code"; head -c 200 /tmp/resp.json; echo
           [ "$code" = "200" ] || exit 1
+
+      - name: Heartbeat insert(写一行心跳,产生数据库写活动)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+        run: |
+          code=$(curl -s -o /tmp/resp.json -w '%{http_code}' \
+            -X POST "$SUPABASE_URL/rest/v1/keepalive" \
+            -H "apikey: $SUPABASE_SECRET_KEY" \
+            -H "Authorization: Bearer $SUPABASE_SECRET_KEY" \
+            -H "Content-Type: application/json" \
+            -H "Prefer: return=minimal" \
+            -H "User-Agent: github-keepalive" \
+            -d '{"source":"github-keepalive"}')
+          echo "HTTP $code"; head -c 200 /tmp/resp.json; echo
+          [ "$code" = "201" ] || exit 1
 
       - name: Keepalive commit(防止 GitHub 60 天无活动停用定时任务)
         run: |
